@@ -5,8 +5,8 @@ function z = transfer_complex_field(z_init, M1i, conn1i, M1, M2i, conn2i, M2)
 [tri2,bar2] = mesh_nearest_point(M2.X, M2i);
 
 % Interpolate complex field
-Phi1 = interpolation_basis_eval(conn1i, tri1, bar1);
-Phi2 = interpolation_basis_eval(conn2i, tri2, bar2);
+Phi1 = interpolation_basis_eval(M1i, conn1i, tri1, bar1);
+Phi2 = interpolation_basis_eval(M2i, conn2i, tri2, bar2);
 
 z = zeros(M1.nv,M2.nv);
 for i = 1:M1.nv
@@ -19,10 +19,18 @@ for i = 1:M1.nv
 end
 end
 
-function Phi = interpolation_basis_eval(conn, tri, bar)
-ang =   conn.rot_vx2f(tri,:) ...
-      + bar(:,[2 3 1]).*conn.para_trans_halfedge(tri,[1 2 3]) ...
-      - bar(:,[3 1 2]).*conn.para_trans_halfedge(tri,[3 1 2]);
+function Phi = interpolation_basis_eval(M, conn, tri, bar)
+% Half-edge parallel transport
+rho_half_egde = sign(M.T2E).*conn.para_trans_v2v(abs(M.T2E));
+rot_vx2f = zeros(M.nf,3);
+rot_vx2f(:,2) = rot_vx2f(:,1) + conn.K_tri/3 - rho_half_egde(:,1);
+rot_vx2f(:,3) = rot_vx2f(:,2) + conn.K_tri/3 - rho_half_egde(:,2);
+% err = rot_vx2f(:,3) + conn.K_tri/3 - rot_vx2f(:,1) - rho_half_egde(:,3);
+% assert(max(abs(wrapToPi(err))) < 1e-6, 'Mismatched vertex to corner parallel transport');
+
+ang =   rot_vx2f(tri,:) ...
+      + bar(:,[2 3 1]).*conn.K_tri(tri)/3 ...
+      - bar(:,[3 1 2]).*conn.K_tri(tri)/3;
 
 Phi = bar.*exp(1i*ang);
 end

@@ -13,11 +13,11 @@ end
 
 %% Load meshes
 disp('Load mesh 1...');
-[M1,dec1,conn1] = load_mesh([path_mesh, name, '/A']);
+[M1,dec1,conn1,const1] = load_mesh([path_mesh, name, '/A']);
 disp('done loading mesh 1.');
 
 disp('Load mesh 2...');
-[M2,dec2,conn2] = load_mesh([path_mesh, name, '/B']);
+[M2,dec2,conn2,const2] = load_mesh([path_mesh, name, '/B']);
 disp('done loading mesh 2.');
 
 % Best projection
@@ -37,8 +37,8 @@ l = l1 + l2;
 %% Pinning function
 % Distance to constraints
 D2 = [];
-for i = 1:length(idvx1)
-    D2i = square_distances_4D(idvx1(i), idvx2(i), M1, dec1, M2, dec2, false);
+for i = 1:length(const1.idvx)
+    D2i = square_distances_4D(const1.idvx(i), const2.idvx(i), M1, dec1, M2, dec2, false);
     if isempty(D2)
         D2 = D2i;
     else
@@ -46,8 +46,8 @@ for i = 1:length(idvx1)
     end
 end
 
-for i = 1:length(idvx_set1)
-    D2i = square_distances_4D(idvx_set1{i}, idvx_set2{i}, M1, dec1, M2, dec2, false);
+for i = 1:length(const1.idvx_set)
+    D2i = square_distances_4D(const1.idvx_set{i}, const2.idvx_set{i}, M1, dec1, M2, dec2, false);
     if isempty(D2)
         D2 = D2i;
     else

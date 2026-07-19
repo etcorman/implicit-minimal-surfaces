@@ -5,7 +5,7 @@ addpath(genpath(pwd));
 
 %% Prepare file list
 path_mesh = 'Mesh/';
-name = 'sitting_armadillo'; % hands_easy teddy sitting_armadillo
+name = 'hands_easy'; % sitting_armadillo
 save_path = ['Results/', name, '/'];
 
 if ~exist(save_path, 'dir')
@@ -164,6 +164,6 @@ for it = 1:it_max
 
     T_tri_col = repmat((1:size(T_tot,1))', [1,3]);
     writeObj([save_path, 'A_inter_tri_it', num2str(it), '.obj'], X1_tot, T_tot, tri_col, T_tri_col, [], [], E2V_2(:,2:3));
-    writeObj([save_path, '_interB_tri_it', num2str(it), '.obj'], X2_tot, T_tot, tri_col, T_tri_col, [], [], E2V_1(:,2:3));
+    writeObj([save_path, 'B_inter_tri_it', num2str(it), '.obj'], X2_tot, T_tot, tri_col, T_tri_col, [], [], E2V_1(:,2:3));
 
 end
